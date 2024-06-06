@@ -1,24 +1,9 @@
 const express = require('express');
-const axios = require('axios');
-const dotenv = require('dotenv');
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-
-dotenv.config();
+const { helloWorld, summarizeText } = require('./src/models/gemini');
+const { extractTextFromPDF } = require('./src/models/pdf');
 
 const app = express();
 const port = 3000;
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-async function helloWorld() {
-    const prompt = "Escreve uma mensagem de boas vindas ao projeto joseph. Use apenas uma linha";
-
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = await response.text();
-    return text;
-}
 
 app.get('/', async (req, res) => {
     try {
@@ -27,6 +12,32 @@ app.get('/', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Failed to generate message' });
+    }
+});
+
+let climateChangeAmazon = './assets/docs/amazonia-clima.pdf';
+
+app.get('/api/v1/articles/climate-change-amazon', async (req, res) => {
+    try {
+        const text = await extractTextFromPDF(climateChangeAmazon);
+        const summary = await summarizeText(text);
+        res.json({ summary });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to process PDF' });
+    }
+});
+
+let brazil2024 = './assets/docs/brasil-2040-clima.pdf';
+
+app.get('/api/v1/articles/brazil-2024', async (req, res) => {
+    try {
+        const text = await extractTextFromPDF(brazil2024);
+        const summary = await summarizeText(text);
+        res.json({ summary });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to process PDF' });
     }
 });
 
