@@ -1,0 +1,20 @@
+networks:
+  dev:
+    driver: bridge
+
+services:
+  joseph-db:
+    container_name: joseph-db
+    image: joseph-postgresql
+    build:
+      dockerfile: Dockerfile.db
+    ports:
+      - "5428:5432"
+    restart: always
+    volumes:
+      - app_data:/var/lib/postgresql/data
+    networks:
+      - dev
+
+volumes:
+  app_data:
