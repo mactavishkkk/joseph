@@ -5,6 +5,7 @@ import requests_cache
 from retry_requests import retry
 from scipy.stats import hmean
 import time
+from datetime import datetime, timedelta
 
 def setup_openmeteo_client():
     cache_session = requests_cache.CachedSession('.cache', expire_after=-1)
@@ -18,7 +19,7 @@ def get_meteo_data(openmeteo_client, latitude, longitude, start_date, end_date):
         "longitude": longitude,
         "start_date": start_date,
         "end_date": end_date,
-        "daily": ["temperature_2m_max", "temperature_2m_min", "precipitation_sum", "rain_sum", "et0_fao_evapotranspiration"]
+        "daily": ["temperature_2m_max", "temperature_2m_min", "rain_sum", "et0_fao_evapotranspiration"]
     }
     responses = openmeteo_client.weather_api(url, params=params)
     response = responses[0]
@@ -33,9 +34,8 @@ def get_meteo_data(openmeteo_client, latitude, longitude, start_date, end_date):
         ),
         "temperature_2m_max": daily.Variables(0).ValuesAsNumpy(),
         "temperature_2m_min": daily.Variables(1).ValuesAsNumpy(),
-        "precipitation_sum": daily.Variables(2).ValuesAsNumpy(),
-        "rain_sum": daily.Variables(3).ValuesAsNumpy(),
-        "et0_fao_evapotranspiration": daily.Variables(4).ValuesAsNumpy()
+        "rain_sum": daily.Variables(2).ValuesAsNumpy(),
+        "et0_fao_evapotranspiration": daily.Variables(3).ValuesAsNumpy()
     }
     return pd.DataFrame(data=daily_data)
 
@@ -48,39 +48,43 @@ openmeteo_client = setup_openmeteo_client()
 def harmonic_mean(series):
     return hmean(series) if all(series > 0) else np.nan
 
+df['data'] = pd.to_datetime(df['data'], errors='coerce', infer_datetime_format=True)
+
 inicio = time.time()
-linha_inicial = 1738
+linha_inicial = 0
 
 for index, row in df.iterrows():
     if index < linha_inicial:
         continue
 
     time.sleep(1.5)
+
     latitude = row['Latitude']
     longitude = row['Longitude']
-    start_date = "2023-08-10"
-    end_date = "2023-12-12"
+    end_date = row['data']
+    
+    if pd.isnull(end_date):
+        print(f"Pula a linha {index + 1} devido a data inválida.")
+        continue
+    
+    start_date = (end_date - pd.DateOffset(months=4)).strftime('%Y-%m-%d')
+    end_date = end_date.strftime('%Y-%m-%d')
     
     daily_dataframe = get_meteo_data(openmeteo_client, latitude, longitude, start_date, end_date)
 
-    # Calcula a soma e a média harmônica
-    somas = daily_dataframe[['temperature_2m_max', 'temperature_2m_min', 'precipitation_sum', 'rain_sum', 'et0_fao_evapotranspiration']].sum()
+    somas = daily_dataframe[['temperature_2m_max', 'temperature_2m_min', 'rain_sum', 'et0_fao_evapotranspiration']].sum()
 
     media_harmonicas = {
         "temperature_2m_max": harmonic_mean(daily_dataframe['temperature_2m_max']),
         "temperature_2m_min": harmonic_mean(daily_dataframe['temperature_2m_min']),
-        "precipitation_sum": harmonic_mean(daily_dataframe['precipitation_sum']),
         "et0_fao_evapotranspiration": harmonic_mean(daily_dataframe['et0_fao_evapotranspiration'])
     }
 
-    # Atualiza o DataFrame
     df.loc[index, 'MHTEMPMAX(media-harmonica-temperatura-maxima(C))'] = media_harmonicas['temperature_2m_max']
     df.loc[index, 'MHTEMPMIN(media-harmonica-temperatura-minima(C))'] = media_harmonicas['temperature_2m_min']
     df.loc[index, 'SUMCHUVA(soma-chuva(mm))'] = somas['rain_sum']
-    df.loc[index, 'MHPRECIPITACAO(media-harmonica-soma-precipitacao(mm))'] = media_harmonicas['precipitation_sum']
     df.loc[index, 'MHEVAPOTRANSPIRACAO(media-harmonica-soma-evapotranspiracao(mm))'] = media_harmonicas['et0_fao_evapotranspiration']
 
-    # Salva o DataFrame atualizado em um novo arquivo CSV após cada iteração
     caminho_do_novo_arquivo = '/home/mac/Downloads/gic/ndwi/joseph_dataframe.csv'
     df.to_csv(caminho_do_novo_arquivo, index=False)
 

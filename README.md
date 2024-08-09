@@ -1,43 +1,41 @@
-# Gemini Express App
+# Gemini Express App This is a Node.js application built with Express that integrates Google's Gemini AI API.
 
-Este é um aplicativo Node.js construído com Express que integra a API do Gemini AI da Google.
+## Features
 
-## Funcionalidades
+- Integration with Google's Gemini AI API
+- Support for live reload using `nodemon`
+- Modeling and data science with python and R
 
-- Integração com a API Gemini AI da Google
-- Suporte a live reload usando `nodemon`
+## Requirements
 
-## Requisitos
+- Node.js - [Download](https://nodejs.org/en/ download/package-manager)
 
-- Node.js - [Download](https://nodejs.org/en/download/package-manager)
+## Installation
 
-## Instalação
+1. Clone the repository:
+```bash
+git clone git@github.com:mactavishkkk/joseph.git
+```
 
-1. Clone o repositório:
-    ```bash
-    git clone git@github.com:mactavishkkk/joseph.git
-    ```
+2. Access the root folder:
+```bash
+cd joseph
+`` `
 
-2. Acesse a pasta raiz:
-    ```bash
-    cd joseph
-    ```
+3. Install the dependencies:
+```bash
+npm install
+```
 
-3. Instale as dependências:
-    ```bash
-    npm install
-    ```
+4. Use the `.env.example` file to create the `.env` file:
 
-4. Use o arquivo `.env.example` para criar o arquivo `.env`:
+5. Now create a production environment with:
+```bash npm run start
+```
 
-5. Agora crie um ambiente de produção com:
-    ```bash
-    npm run start
-    ```
+- Or a development environment
+```bash
+npm run dev
+```
 
-- Ou um ambiente de desenvolvimento
-    ```bash
-    npm run dev
-    ```
-
-6. pronto, agora a rota de boas-vindas já deve estar em: `http://localhost:3000/`
+6. Now the welcome route should be at: `http://localhost:3000/`

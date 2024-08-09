@@ -43,32 +43,20 @@ caminho_do_arquivo = '/home/mac/Downloads/gic/ndwi/joseph_coords.csv'
 
 df = pd.read_csv(caminho_do_arquivo)
 
-# Adiciona as novas colunas com valores nulos ao DataFrame, se não existirem
-if 'MHTEMPMAX(media-harmonica-temperatura-maxima(C))' not in df.columns:
-    df['MHTEMPMAX(media-harmonica-temperatura-maxima(C))'] = np.nan
-if 'MHTEMPMIN(media-harmonica-temperatura-minima(C))' not in df.columns:
-    df['MHTEMPMIN(media-harmonica-temperatura-minima(C))'] = np.nan
-if 'SUMCHUVA(soma-chuva(mm))' not in df.columns:
-    df['SUMCHUVA(soma-chuva(mm))'] = np.nan
-if 'MHPRECIPITACAO(media-harmonica-soma-precipitacao(mm))' not in df.columns:
-    df['MHPRECIPITACAO(media-harmonica-soma-precipitacao(mm))'] = np.nan
-if 'MHEVAPOTRANSPIRACAO(media-harmonica-soma-evapotranspiracao(mm))' not in df.columns:
-    df['MHEVAPOTRANSPIRACAO(media-harmonica-soma-evapotranspiracao(mm))'] = np.nan
-
 openmeteo_client = setup_openmeteo_client()
 
 def harmonic_mean(series):
     return hmean(series) if all(series > 0) else np.nan
 
 inicio = time.time()
-
-linha_inicial = 1738
+linha_inicial = 0
 
 for index, row in df.iterrows():
     if index < linha_inicial:
-        continue  # Pula as linhas até a linha inicial desejada
+        continue
 
     time.sleep(1.5)
+    
     latitude = row['Latitude']
     longitude = row['Longitude']
     start_date = "2023-08-12"
@@ -92,7 +80,7 @@ for index, row in df.iterrows():
     df.loc[index, 'MHTEMPMAX(media-harmonica-temperatura-maxima(C))'] = media_harmonicas['temperature_2m_max']
     df.loc[index, 'MHTEMPMIN(media-harmonica-temperatura-minima(C))'] = media_harmonicas['temperature_2m_min']
     df.loc[index, 'SUMCHUVA(soma-chuva(mm))'] = somas['rain_sum']
-    df.loc[index, 'MHPRECIPITACAO(media-harmonica-soma-precipitacao(mm))'] = media_harmonicas['precipitation_sum']
+    df.loc[index, 'MHPRECIPITACAO(media-harmonica-soma-precipitacao(mm))'] = somas['precipitation_sum']
     df.loc[index, 'MHEVAPOTRANSPIRACAO(media-harmonica-soma-evapotranspiracao(mm))'] = media_harmonicas['et0_fao_evapotranspiration']
 
     caminho_do_novo_arquivo = '/home/mac/Downloads/gic/ndwi/joseph_dataframe.csv'
