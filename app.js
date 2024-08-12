@@ -1,6 +1,7 @@
 const express = require('express');
 const { helloWorld, summarizeText } = require('./src/models/gemini');
 const { extractTextFromPDF } = require('./src/models/pdf');
+const Dataset = require('./models/dataset'); 
 
 const app = express();
 const port = 3000;
@@ -38,6 +39,18 @@ app.get('/api/v1/articles/brazil-2024', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Failed to process PDF' });
+    }
+});
+
+app.get('/api/v1/dataset', async (req, res) => {
+    const { page = 1, limit = 3 } = req.query;
+
+    try {
+        const data = await Dataset.getAll(page, limit);
+        res.json(data);
+    } catch (error) {
+        console.error('Erro ao buscar dados:', error);
+        res.status(500).json({ error: 'Erro ao buscar dados' });
     }
 });
 

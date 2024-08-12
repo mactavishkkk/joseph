@@ -20,7 +20,7 @@ git clone git@github.com:mactavishkkk/joseph.git
 2. Access the root folder:
 ```bash
 cd joseph
-`` `
+```
 
 3. Install the dependencies:
 ```bash
@@ -30,7 +30,8 @@ npm install
 4. Use the `.env.example` file to create the `.env` file:
 
 5. Now create a production environment with:
-```bash npm run start
+```bash 
+npm run start
 ```
 
 - Or a development environment
