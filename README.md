@@ -4,7 +4,7 @@
 
 - Integration with Google's Gemini AI API
 - Support for live reload using `nodemon`
-- Modeling and data science with python and R
+- Modeling and data science with python and R (_for more information, read the readme.md of each module_)
 
 ## Requirements
 

@@ -14,10 +14,10 @@ db_landsat<- cbind(db_landsat_sat[,1:2], db_landsat_clima[,3:11] )
 db_landsat$Date <- ymd(db_landsat$data)
 
 
-coord_ref<-read.csv("C:/Users/vitor/OneDrive/Documentos/Central_Dados/projec_joseph/coordenadas_usar.csv", header = TRUE)
+coord_ref<-read.csv("../python/docs/coordenadas_usar.csv", header = TRUE)
 coords_ref<-coord_ref[,2:3]
 
-save_path <- "C:/Users/vitor/OneDrive/Documentos/Central_Dados/projec_joseph/modelos/"
+save_path <- "./models/"
 
 all_predictions <- list()
 models <- list()
@@ -71,25 +71,8 @@ for (i in 1:nrow(coords_ref)){
     stop("Os vetores têm comprimentos diferentes.")
   }
   
-
-
-
-
-
-  
-
-
-
-
-
-  
-  
-
   N_pred <- 2
   time_pred <- max(data_frame$time) + 1:N_pred
- 
-  
-   
 
   stan_model <- "
   data {
@@ -216,7 +199,6 @@ for (i in 1:nrow(coords_ref)){
     }
   }
 "
-  
 
   N_pred <- 2
   time_pred <- max(data_frame$time) + 1:N_pred
@@ -243,8 +225,6 @@ for (i in 1:nrow(coords_ref)){
     warmup = 1000,
     seed = 123
   )
-  
-  
 
   predictions <- extract(stan_fit, pars = c("ndvi_pred", "ndwi_pred", "hsi_pred","mh_temp_max_pred", "mh_temp_min_pred", "mh_evap_tranp_pred", "soma_chuva_pred"))
   
@@ -257,10 +237,6 @@ for (i in 1:nrow(coords_ref)){
   mhevatransp_pred_means <- apply(predictions$mh_evap_tranp_pred, 2, mean)
   somachuva_pred_means <- apply(predictions$soma_chuva_pred, 2, mean)
   
-  
-  
-
-
   models[[paste0("coord_", i)]] <- list(model = stan_fit, 
                                         ndvi_prediction = ndvi_pred_means,
                                         ndwi_prediction = ndwi_pred_means,
@@ -292,12 +268,6 @@ save_partial_results("final", all_predictions, save_path)
 # Salvar todos os modelos em um único arquivo
 saveRDS(models, file = paste0(save_path, "all_models.rds"))
 
-
-
-
-
-
-
 #### 3######
 ndvi_pred = sapply(models, function(model) model$ndvi_prediction)
 ndwi_pred = sapply(models, function(model) model$ndwi_prediction)
@@ -307,10 +277,6 @@ mh_TMAX_pred = sapply(models, function(model) model$)
 mh_TMIN_pred = sapply(models, function(model) model$hsi_prediction)
 mh_EVAPO_pred = sapply(models, function(model) model$hsi_prediction)
 soma_chuva_pred = sapply(models, function(model) model$hsi_prediction)
-
-
-
-
 
 ndwi_df <-t(data.frame(
   row.names = c("20241012_ndwi", "20241112_ndwi"),
@@ -330,7 +296,7 @@ hsi_df <-t(data.frame(
 
 predictions_df <-cbind(ndwi_df,hsi_df,ndvi_df,coords_ref[1:125,])
 head(predictions_df)
-write.csv(predictions_df,"C:/Users/vitor/OneDrive/Documentos/Central_Dados/projec_joseph/125outubro_novembro_.csv" )
+write.csv(predictions_df,"../python/docs/125outubro_novembro_.csv" )
 
 
 
