@@ -39,7 +39,7 @@ def get_meteo_data(openmeteo_client, latitude, longitude, start_date, end_date):
     }
     return pd.DataFrame(data=daily_data)
 
-caminho_do_arquivo = '/home/mac/Downloads/gic/ndwi/joseph_coords.csv'
+caminho_do_arquivo = './docs/joseph_coords.csv'
 
 df = pd.read_csv(caminho_do_arquivo)
 
@@ -85,7 +85,7 @@ for index, row in df.iterrows():
     df.loc[index, 'SUMCHUVA(soma-chuva(mm))'] = somas['rain_sum']
     df.loc[index, 'MHEVAPOTRANSPIRACAO(media-harmonica-soma-evapotranspiracao(mm))'] = media_harmonicas['et0_fao_evapotranspiration']
 
-    caminho_do_novo_arquivo = '/home/mac/Downloads/gic/ndwi/joseph_dataframe.csv'
+    caminho_do_novo_arquivo = './docs/joseph_dataframe.csv'
     df.to_csv(caminho_do_novo_arquivo, index=False)
 
     fim = time.time()

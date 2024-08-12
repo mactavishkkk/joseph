@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-caminho_do_arquivo = '/home/mac/Downloads/gic/ndwi/timeline_2014_2024.csv'
+caminho_do_arquivo = './docs/timeline_2014_2024.csv'
 
 df = pd.read_csv(caminho_do_arquivo)
 df = df.rename(columns={'x': 'Latitude', 'y': 'Longitude'})
@@ -40,5 +40,5 @@ if 'Unnamed: 7' in df.columns:
 
 print(df.head())
 
-caminho_do_novo_arquivo = '/home/mac/Downloads/gic/ndwi/joseph_coords.csv'
+caminho_do_novo_arquivo = './docs/joseph_coords.csv'
 df.to_csv(caminho_do_novo_arquivo, index=False)
