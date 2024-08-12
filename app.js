@@ -54,6 +54,26 @@ app.get('/api/v1/dataset', async (req, res) => {
     }
 });
 
+app.get('/api/v1/average-rainfall', async (req, res) => {
+    try {
+        const data = await Dataset.getAverageRainfallByYear();
+        res.json(data);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to fetch average rainfall data' });
+    }
+});
+
+app.get('/api/v1/average-metrics', async (req, res) => {
+    try {
+        const data = await Dataset.getAverageMetricsByYear();
+        res.json(data);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to fetch average metrics data' });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Servidor rodando em http://localhost:${port}`);
 });
