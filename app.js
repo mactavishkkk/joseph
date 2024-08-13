@@ -1,10 +1,13 @@
 const express = require('express');
+const cors = require('cors');
 const { helloWorld, summarizeText } = require('./src/models/gemini');
 const { extractTextFromPDF } = require('./src/models/pdf');
 const Dataset = require('./models/dataset'); 
 
 const app = express();
 const port = 3000;
+
+app.use(cors());
 
 app.get('/', async (req, res) => {
     try {
