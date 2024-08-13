@@ -1,4 +1,5 @@
-## Gemini Express App This is a Node.js application built with Express that integrates Google's Gemini AI API.
+## JOSEPH PROJECT - Gemini API Developer Competition - #buildwithgemini
+Gemini Express App This is a Node.js application built with Express that integrates Google's Gemini AI API.
 
 ![alt text](assets/background.jpeg)
 
