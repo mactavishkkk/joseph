@@ -7,6 +7,7 @@
 - Integration with Google's Gemini AI API
 - Support for live reload using `nodemon`
 - Modeling and data science with python and R (_for more information, read the readme.md of each module_)
+- This project has a visual extension, where you can find the source code here: [joseph-project](https://github.com/devluisclaudio/joseph-project.git) | Website: [josephproject.com.br](https://josephproject.com.br/)
 
 ### Requirements
 
